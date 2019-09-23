@@ -1,0 +1,42 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<input type="text" id="inputURL"/>
+	<button id="go">GO</button>
+
+<script type="text/javascript">
+
+function sendURL(url, callback) {
+	var xhr = new XMLHttpRequest();
+	console.log(url)
+	xhr.open('POST', '/?url='+url, false);
+
+	// 3. Отсылаем запрос
+	xhr.send();
+
+	// 4. Если код ответа сервера не 200, то это ошибка
+	if (xhr.status != 200) {
+	  	console.log( xhr.status + ': ' + xhr.responseText ); // пример вывода: 404: Not Found
+
+
+	} else {
+		console.log(xhr.responseText )
+	}
+}
+
+
+
+document.addEventListener("DOMContentLoaded", ready);
+function ready() {
+	console.log("ready")
+	document.getElementById('go').onclick=function(){
+		const url = document.getElementById('inputURL').value
+		sendURL(url, function() {})
+	}
+
+}
+</script>
+</body>
+</html>
