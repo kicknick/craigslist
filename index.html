@@ -7,6 +7,7 @@
 	<button id="go">GO</button>
 	<br/>
 	<a href="" id="resultLink"></a>
+	<span id="result"></span>
 
 <script type="text/javascript">
 
@@ -14,14 +15,11 @@ function sendURL(url, callback) {
 	var xhr = new XMLHttpRequest();
 	console.log(url)
 	xhr.open('POST', '/?url='+url, false);
-
-	// 3. Отсылаем запрос
 	xhr.send();
 
-	// 4. Если код ответа сервера не 200, то это ошибка
 	if (xhr.status != 200) {
-	  	console.log( xhr.status + ': ' + xhr.responseText ); // пример вывода: 404: Not Found
-
+	  	console.log( xhr.status + ': ' + xhr.responseText ); 
+	  	document.getElementById("result").innerHTML = "something works wrong, try again"
 
 	} else {
 		console.log(xhr.responseText)
