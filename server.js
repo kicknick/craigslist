@@ -2,10 +2,10 @@ var puppeteer = require('/usr/local/lib/node_modules/puppeteer')
 //var puppeteer = require('puppeteer')
 var headless = false
 // const router = express.Router();
-var xl = require('excel4node');
+// var xl = require('excel4node');
 var express = require('express');
 const path = require('path');
-
+const download = require('image-downloader')
 var app = express();
 
 app.get('/', function(req, res) {
@@ -25,9 +25,55 @@ app.listen(2222, function () {
 
 
 
+let getPictures = async(page, url) => {
+	try{
+		await page.goto(url)
+		const imgDiv = '#thumbs'
+		await page.waitForSelector(imgDiv)
+
+		const result = await page.evaluate(() => {
+			let result =  document.querySelector('#thumbs').querySelectorAll('a') //Array.from(
+			let pictures = []
+			result.forEach(function(element) {
+				pictures.push(element.href)
+			});
+			return pictures
+		})
+		return result
+
+		// for(let i in result){
+		// 	console.log(result[i])
+		// }
+
+	} catch(e) {
+		console.log(e)
+	}
+}
+
+
+let downloadPictures = async(picturesURL) => {
+	let pictures = []
+
+	for(var i in picturesURL) {
+		const options = {
+		  url: picturesURL[i],
+		  dest: path.join(__dirname + '/pictures'),             // Save to /path/to/dest/image.jpg
+		  extractFilename: true
+		}
+	 
+		await download.image(options)
+		  .then(({ filename, image }) => {
+		    console.log('Saved to', filename)  // Saved to /path/to/dest/image.jpg
+		    pictures.push(filename)
+		  })
+		  .catch((err) => console.error(err))
+		}
+		return pictures
+}
+
+
 
 let parsePage = async(url, res) => {
-	  // console.log(url)
 		try{
 		const browser = await puppeteer.launch({headless: headless});
 		const page = await browser.newPage()
@@ -54,7 +100,14 @@ let parsePage = async(url, res) => {
 		// console.log(result.title)
 		// console.log(result.cityOrN)
 		// console.log(result.description)
-		Login(result.title, result.cityOrN, result.description, res)
+		 getPictures(page, url).then(function(pics) {
+		 	downloadPictures(pics).then(function(pictures) {
+		 		console.log(pictures)
+		 		browser.close();
+		 		console.log()
+		 		Login(result.title, result.cityOrN, result.description, pictures, res)
+		 	})
+		 })
 
 
 	} catch(e) {
@@ -69,7 +122,7 @@ let parsePage = async(url, res) => {
 
 
 
-let Login = async(postingTitle, cityOrN, description, res) => {
+let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 	const url = 'https://accounts.craigslist.org'
 	const email = 'toby@forwardven.com'
 	// const password = 'gfurfgryu4343'
@@ -79,6 +132,8 @@ let Login = async(postingTitle, cityOrN, description, res) => {
 		// const browser = await puppeteer.launch();
 	  const page = await browser.newPage()
 		await page.goto(url)
+
+		//LOGIN
 		const emailSelector = '#inputEmailHandle'
 		const passSelector = '#inputPassword'
 
@@ -91,6 +146,8 @@ let Login = async(postingTitle, cityOrN, description, res) => {
 
 		const loginSelector = '#login'
 		await page.click(loginSelector)
+
+		//LOGIN END
 
 		const goSelector = 'body > article > section > form.new_posting_thing > select'
 		const goSelector2 = 'body > article > section > form.new_posting_thing > button'
@@ -135,22 +192,26 @@ let Login = async(postingTitle, cityOrN, description, res) => {
 		// POSTING
 		// const postingTitle = "We purchase any house under $350,000"
 		const titleSelector = '#PostingTitle'
+		// await page.waitFor(1000);
 		await page.waitForSelector(titleSelector)
 		await page.type(titleSelector, postingTitle)
 
 		// const cityOrN = 'Anywhere in Dallas or Fort Worth Area'
 		const cityOrNSelector = '#GeographicArea'
+		// await page.waitFor(1000);
 		await page.waitForSelector(cityOrNSelector)
 		await page.type(cityOrNSelector, cityOrN)
 
 
 		//const description = "We buy houses throughout North Texas. We offer fair prices and work with every situation. We have helped people who: just want to sell, don't want to deal with realtor fees, have a house that needs a bunch of work, inherited a property, never got a will, never probated, just probated, etc, etc. If we can't help for some odd reason, we will point you in the right direction!"
 		const descriptionSelector = '#PostingBody'
+		// await page.waitFor(1000);
 		await page.waitForSelector(descriptionSelector)
 		await page.type(descriptionSelector, description)
 
 
 		const continueButton4 = '#new-edit > div > div.json-form-group.json-form-group-container.submit-buttons > div > button'
+		// await page.waitFor(1000);
 		await page.waitForSelector(continueButton4)
 		await page.click(continueButton4)
 
@@ -163,13 +224,15 @@ let Login = async(postingTitle, cityOrN, description, res) => {
 		// console.log(linkHandlers[0])
 		await linkHandlers[0].click();
 
+		for(let i in pictures) {
+			const imgAdress = pictures[i]
+			const fileInputSelector = '#uploader > form > input[type=file]:nth-child(3)'
+			await page.waitForSelector(fileInputSelector)
+			await page.waitFor(2000);
+			const input = await page.$(fileInputSelector);
+			await input.uploadFile(imgAdress);
+		}
 
-		const imgAdress = './m17nh03blkm.jpg'
-		const fileInputSelector = '#uploader > form > input[type=file]:nth-child(3)'
-		await page.waitForSelector(fileInputSelector)
-		await page.waitFor(2000);
-		const input = await page.$(fileInputSelector);
-		await input.uploadFile(imgAdress);
 
 		const doneImgSelector = 'body > article > section > form > button'
 		await page.waitForSelector(doneImgSelector)
@@ -191,17 +254,14 @@ let Login = async(postingTitle, cityOrN, description, res) => {
 		console.log("DONE")
 		console.log(resultUrl)
 		res.status(200).send(resultUrl).end();
-		// res.sendStatus(200).end();
 
 
 	}	catch(e) {
 		console.log(e)
-		res.status(400).send('Error').end();
+		res.sendStatus(400).send('Error').end();
 	}
 
 	//browser.close();
 }
 
-
-//Login()
 
