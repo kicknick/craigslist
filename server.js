@@ -1,5 +1,6 @@
 var puppeteer = require('/usr/local/lib/node_modules/puppeteer')
 //var puppeteer = require('puppeteer')
+var headless = false
 // const router = express.Router();
 var xl = require('excel4node');
 var express = require('express');
@@ -29,7 +30,7 @@ app.post('/', function(req, res) {
 let parsePage = async(url) => {
 	  // console.log(url)
 		try{
-		const browser = await puppeteer.launch({headless: false});
+		const browser = await puppeteer.launch({headless: headless});
 		const page = await browser.newPage()
 		await page.goto(url)
 
@@ -75,7 +76,7 @@ let Login = async(postingTitle, cityOrN, description) => {
 	// const password = 'gfurfgryu4343'
 	const password = 'Alpha123@!make123'
 	try{
-		const browser = await puppeteer.launch({headless: false});
+		const browser = await puppeteer.launch({headless: headless});
 		// const browser = await puppeteer.launch();
 	  const page = await browser.newPage()
 		await page.goto(url)
