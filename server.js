@@ -25,7 +25,7 @@ app.listen(2222, function () {
 
 
 
-let getPictures = async(page, url) => {
+let getPictures = async(page, url, res) => {
 	try{
 		await page.goto(url)
 		const imgDiv = '#thumbs'
@@ -52,7 +52,7 @@ let getPictures = async(page, url) => {
 }
 
 
-let downloadPictures = async(picturesURL) => {
+let downloadPictures = async(picturesURL, res) => {
 	let pictures = []
 
 	for(var i in picturesURL) {
@@ -101,8 +101,8 @@ let parsePage = async(url, res) => {
 		// console.log(result.title)
 		// console.log(result.cityOrN)
 		// console.log(result.description)
-		 getPictures(page, url).then(function(pics) {
-		 	downloadPictures(pics).then(function(pictures) {
+		 getPictures(page, url, res).then(function(pics) {
+		 	downloadPictures(pics, res).then(function(pictures) {
 		 		console.log(pictures)
 		 		browser.close();
 		 		console.log()
