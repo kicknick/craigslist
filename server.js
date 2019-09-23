@@ -19,7 +19,7 @@ app.post('/', function(req, res) {
 });
 
 app.listen(2222, function () {
-  console.log('Example app listening on port 2222!');
+  console.log('Craigslist app listening on port 2222!');
 });
 
 
