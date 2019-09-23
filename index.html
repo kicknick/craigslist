@@ -5,6 +5,7 @@
 <body>
 	<input type="text" id="inputURL"/>
 	<button id="go">GO</button>
+	<a href="" id="resultLink"></a>
 
 <script type="text/javascript">
 
@@ -22,7 +23,8 @@ function sendURL(url, callback) {
 
 
 	} else {
-		console.log(xhr.responseText )
+		console.log(xhr.responseText)
+		document.getElementById("resultLink").href=xhr.responseText
 	}
 }
 

@@ -14,20 +14,19 @@ app.get('/', function(req, res) {
 
 app.post('/', function(req, res) {
   const url = req.param('url')
-  parsePage(url)
-  res.sendStatus(200).end();
+  parsePage(url, res)
   //res.status(400).send('Error in retrieving user from database');
 });
 
-// app.listen(2222, function () {
-//   console.log('Example app listening on port 2222!');
-// });
+app.listen(2222, function () {
+  console.log('Example app listening on port 2222!');
+});
 
 
 
 
 
-let parsePage = async(url) => {
+let parsePage = async(url, res) => {
 	  // console.log(url)
 		try{
 		const browser = await puppeteer.launch({headless: headless});
@@ -55,7 +54,7 @@ let parsePage = async(url) => {
 		// console.log(result.title)
 		// console.log(result.cityOrN)
 		// console.log(result.description)
-		Login(result.title, result.cityOrN, result.description)
+		Login(result.title, result.cityOrN, result.description, res)
 
 
 	} catch(e) {
@@ -66,11 +65,11 @@ let parsePage = async(url) => {
 
 
 
-parsePage('https://dallas.craigslist.org/mdf/wan/6975410254.html?lang=ru')
+//parsePage('https://dallas.craigslist.org/mdf/wan/6975410254.html?lang=ru')
 
 
 
-let Login = async(postingTitle, cityOrN, description) => {
+let Login = async(postingTitle, cityOrN, description, res) => {
 	const url = 'https://accounts.craigslist.org'
 	const email = 'toby@forwardven.com'
 	// const password = 'gfurfgryu4343'
@@ -183,11 +182,21 @@ let Login = async(postingTitle, cityOrN, description) => {
 		await page.click(publishSelector)
 
 
+
 		const resultUrlSelector = '#new-edit > div > div > ul > li:nth-child(1) > a'
+		await page.waitForSelector(resultUrlSelector)
+		const resultUrl = await page.evaluate((resultUrlSelector) => {
+		  return document.querySelector(resultUrlSelector).innerText
+		}, resultUrlSelector);
+		console.log("DONE")
+		console.log(resultUrl)
+		res.status(200).send(resultUrl).end();
+		// res.sendStatus(200).end();
 
 
 	}	catch(e) {
 		console.log(e)
+		res.status(400).send('Error').end();
 	}
 
 	//browser.close();
