@@ -47,6 +47,7 @@ let getPictures = async(page, url) => {
 
 	} catch(e) {
 		console.log(e)
+		res.sendStatus(400).send('Error').end();
 	}
 }
 
@@ -66,7 +67,7 @@ let downloadPictures = async(picturesURL) => {
 		    console.log('Saved to', filename)  // Saved to /path/to/dest/image.jpg
 		    pictures.push(filename)
 		  })
-		  .catch((err) => console.error(err))
+		  .catch((err) => {console.error(err); res.sendStatus(400).send('Error').end();})
 		}
 		return pictures
 }
