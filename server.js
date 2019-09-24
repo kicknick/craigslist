@@ -210,7 +210,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		const continueButton2 = 'body > article > section > form > button'
 		await page.waitFor(3000);
 		await page.waitForSelector(continueButton2)
-		await page.waitFor(1000);
+		await page.waitFor(3000);
 		await page.click(continueButton2)
 		// await clickOn(continueButton2, page)
 		//await page.$x("//*[contains(text(), 'continue')]")[0].click();
@@ -228,10 +228,11 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		// await page.$x("//*[contains(text(), 'wanted: real estate')]")[0].click();
 		console.log("wanted: real estate selected")
 
+														 #new-edit > div > div.json-form-group.json-form-group-container.button > div > button
 		const continueButton3 = '#new-edit > div > div.json-form-group.json-form-group-container.button > div > button'
-		await page.waitFor(1000);
+		await page.waitFor(3000);
 		await page.waitForSelector(continueButton3)
-		await page.waitFor(1000);
+		await page.waitFor(3000);
 		await page.click(continueButton3)
 		console.log("real estate clicked")
 		// await page.click(continueButton3)
