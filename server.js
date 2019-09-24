@@ -86,9 +86,6 @@ let downloadPictures = (pics, i, result, callback) => {
     }
   });
 }
-downloadPictures(pics, 0, [], function(result){
-  console.log(result)
-})
 
 
 
