@@ -142,6 +142,16 @@ let parsePage = async(url, res) => {
 
 //parsePage('https://dallas.craigslist.org/mdf/wan/6975410254.html?lang=ru')
 
+let clickOn = async(selector, page) => {
+	await page.waitForSelector(selector, {"timeout": 5000}).then(async r => {
+		await page.click(selector)
+	}, async e => {
+		console.log(page.url())
+		await page.goto(page.url())
+		await clickOn(selector, page)
+	})
+}
+
 
 
 let Login = async(postingTitle, cityOrN, description, pictures, res) => {
@@ -168,7 +178,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 		const loginSelector = '#login'
 		await page.click(loginSelector)
-
+		console.log("logged in")
 		//LOGIN END
 
 		const goSelector = 'body > article > section > form.new_posting_thing > select'
@@ -187,61 +197,83 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		await page.waitForSelector(locationSelector)
 		await page.click(locationSelector)
 
-		const continueButton = 'body > article > section > form > button'
+		let continueButton = 'body > article > section > form > button'
 		await page.waitForSelector(continueButton)
 		await page.click(continueButton)
 
-
 		const typeOfPosting = 'body > article > section > form > ul > li:nth-child(5) > label > span.right-side'
+		// await page.waitFor(1000);
 		await page.waitForSelector(typeOfPosting)
 		await page.click(typeOfPosting)
-
+		console.log("type of posting selected")
 
 		const continueButton2 = 'body > article > section > form > button'
+		await page.waitFor(3000);
 		await page.waitForSelector(continueButton2)
+		await page.waitFor(1000);
 		await page.click(continueButton2)
+		// await clickOn(continueButton2, page)
+		//await page.$x("//*[contains(text(), 'continue')]")[0].click();
+		// await page.evaluate((selector) => document.querySelector(selector).click(), continueButton2);
+		console.log("type of posting clicked")
 
 
-		const realEstate = '#new-edit > div > label > label:nth-child(11) > div > span'
-		await page.waitForSelector(realEstate)
-		await page.click(realEstate)
 
+															  
+		const realEstateSelector = '#new-edit > div > label > label:nth-child(11) > div > span'
+		await page.waitFor(1000);
+		await page.waitForSelector(realEstateSelector)
+		await page.waitFor(1000);
+		await page.click(realEstateSelector)
+		// await page.$x("//*[contains(text(), 'wanted: real estate')]")[0].click();
+		console.log("wanted: real estate selected")
 
 		const continueButton3 = '#new-edit > div > div.json-form-group.json-form-group-container.button > div > button'
+		await page.waitFor(1000);
 		await page.waitForSelector(continueButton3)
+		await page.waitFor(1000);
 		await page.click(continueButton3)
+		console.log("real estate clicked")
+		// await page.click(continueButton3)
 
 		// POSTING
 		// const postingTitle = "We purchase any house under $350,000"
 		const titleSelector = '#PostingTitle'
-		// await page.waitFor(1000);
+		await page.waitFor(1000);
 		await page.waitForSelector(titleSelector)
+		await page.waitFor(1000);
 		await page.type(titleSelector, postingTitle)
 
 		// const cityOrN = 'Anywhere in Dallas or Fort Worth Area'
 		const cityOrNSelector = '#GeographicArea'
-		// await page.waitFor(1000);
+		await page.waitFor(1000);
 		await page.waitForSelector(cityOrNSelector)
+		await page.waitFor(1000);
 		await page.type(cityOrNSelector, cityOrN)
 
 
 		//const description = "We buy houses throughout North Texas. We offer fair prices and work with every situation. We have helped people who: just want to sell, don't want to deal with realtor fees, have a house that needs a bunch of work, inherited a property, never got a will, never probated, just probated, etc, etc. If we can't help for some odd reason, we will point you in the right direction!"
 		const descriptionSelector = '#PostingBody'
-		// await page.waitFor(1000);
+		await page.waitFor(1000);
 		await page.waitForSelector(descriptionSelector)
+		await page.waitFor(1000);
 		await page.type(descriptionSelector, description)
 
 
 		const continueButton4 = '#new-edit > div > div.json-form-group.json-form-group-container.submit-buttons > div > button'
-		// await page.waitFor(1000);
+		await page.waitFor(1000);
 		await page.waitForSelector(continueButton4)
+		await page.waitFor(1000);
 		await page.click(continueButton4)
 
 
 
 		//POSTING IMAGE
-		await page.waitForSelector('#classic')
+		console.log("posting images")
+		await page.waitForNavigation()
 		await page.waitFor(2000);
+		await page.waitForSelector('#classic')
+		await page.waitFor(1000);
 		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]");
 		// console.log(linkHandlers[0])
 		await linkHandlers[0].click();
@@ -253,6 +285,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 			await page.waitFor(2000);
 			const input = await page.$(fileInputSelector);
 			await input.uploadFile(imgAdress);
+			console.log("posted "+imgAdress)
 		}
 
 
@@ -262,6 +295,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 
 		//PUBLISH
+		console.log("publishing...")
 		const publishSelector = '#publish_top > button'
 		await page.waitForSelector(publishSelector)
 		await page.click(publishSelector)
@@ -279,7 +313,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 
 	}	catch(e) {
-		console.log(e)
+		console.error("Error: ", e)
 		res.sendStatus(400).send('Error').end();
 	}
 
