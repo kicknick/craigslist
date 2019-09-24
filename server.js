@@ -51,26 +51,45 @@ let getPictures = async(page, url, res) => {
 	}
 }
 
+/// 403
+// let downloadPictures = async(picturesURL, res) => {
+// 	let pictures = []
 
-let downloadPictures = async(picturesURL, res) => {
-	let pictures = []
-
-	for(var i in picturesURL) {
-		const options = {
-		  url: picturesURL[i],
-		  dest: path.join(__dirname + '/pictures'),             // Save to /path/to/dest/image.jpg
-		  extractFilename: true
-		}
+// 	for(var i in picturesURL) {
+// 		const options = {
+// 		  url: picturesURL[i],
+// 		  dest: path.join(__dirname + '/pictures'),             // Save to /path/to/dest/image.jpg
+// 		  extractFilename: true
+// 		}
 	 
-		await download.image(options)
-		  .then(({ filename, image }) => {
-		    console.log('Saved to', filename)  // Saved to /path/to/dest/image.jpg
-		    pictures.push(filename)
-		  })
-		  .catch((err) => {console.error(err); res.sendStatus(400).send('Error').end();})
-		}
-		return pictures
+// 		await download.image(options)
+// 		  .then(({ filename, image }) => {
+// 		    console.log('Saved to', filename)  // Saved to /path/to/dest/image.jpg
+// 		    pictures.push(filename)
+// 		  })
+// 		  .catch((err) => {console.error(err); res.sendStatus(400).send('Error').end();})
+// 		}
+// 		return pictures
+// }
+
+let downloadPictures = (pics, i, result, callback) => {
+  const url = pics[i]
+  wget({url: url, dest: "./"}, (error, response, body) => {
+    console.log(response.filepath)
+    result.push(response.filepath)
+    i++
+    if(i < pics.length) 
+      downloadPictures(pics, i, result, callback)
+    else {
+      // console.log("END")
+      callback(result)
+    }
+  });
 }
+downloadPictures(pics, 0, [], function(result){
+  console.log(result)
+})
+
 
 
 
@@ -102,12 +121,17 @@ let parsePage = async(url, res) => {
 		// console.log(result.cityOrN)
 		// console.log(result.description)
 		 getPictures(page, url, res).then(function(pics) {
-		 	downloadPictures(pics, res).then(function(pictures) {
-		 		console.log(pictures)
-		 		browser.close();
-		 		console.log()
-		 		Login(result.title, result.cityOrN, result.description, pictures, res)
-		 	})
+		 	downloadPictures(pics, 0, [], function(pictures){
+			  console.log(pictures)
+			  browser.close();
+			  Login(result.title, result.cityOrN, result.description, pictures, res)
+			})
+		 	// downloadPictures(pics, res).then(function(pictures) {
+		 	// 	console.log(pictures)
+		 	// 	browser.close();
+		 	// 	console.log()
+		 	// 	Login(result.title, result.cityOrN, result.description, pictures, res)
+		 	// })
 		 })
 
 
