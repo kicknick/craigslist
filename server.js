@@ -74,7 +74,7 @@ let getPictures = async(page, url, res) => {
 var wget = require('node-wget');
 let downloadPictures = (pics, i, result, callback) => {
   const url = pics[i]
-  wget({url: url, dest: path.join(__dirname + '/')}, (error, response, body) => {
+  wget({url: url, dest: path.join(__dirname + '/pictures/')}, (error, response, body) => {
     console.log(response.filepath)
     result.push(response.filepath)
     i++
