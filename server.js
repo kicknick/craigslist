@@ -228,7 +228,6 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		// await page.$x("//*[contains(text(), 'wanted: real estate')]")[0].click();
 		console.log("wanted: real estate selected")
 
-														 #new-edit > div > div.json-form-group.json-form-group-container.button > div > button
 		const continueButton3 = '#new-edit > div > div.json-form-group.json-form-group-container.button > div > button'
 		await page.waitFor(3000);
 		await page.waitForSelector(continueButton3)
