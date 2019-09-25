@@ -10,7 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.1.0",
+    "axios": "^0.19.0",
+    "cheerio": "^1.0.0-rc.3",
+    "download-file": "^0.1.5",
     "excel4node": "^1.7.2",
-    "image-downloader": "^3.5.0"
+    "image-downloader": "^3.5.0",
+    "node-wget": "^0.4.3",
+    "sync": "^0.2.5"
   }
 }

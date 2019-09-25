@@ -29,7 +29,13 @@ let getPictures = async(page, url, res) => {
 	try{
 		await page.goto(url)
 		const imgDiv = '#thumbs'
-		await page.waitForSelector(imgDiv)
+		try{
+			await page.waitForSelector(imgDiv, {"timeout": 3000}).then(r => {})
+		} catch(e) {
+			return []
+			console.log(e)
+		} 
+
 
 		const result = await page.evaluate(() => {
 			let result =  document.querySelector('#thumbs').querySelectorAll('a') //Array.from(
@@ -96,25 +102,47 @@ let parsePage = async(url, res) => {
 		const page = await browser.newPage()
 		await page.goto(url)
 
-		const titleSelector = '#titletextonly'
-		const cityOrNSelector = 'body > section > section > h2 > span > small'
-		const descriptionSelector = '#postingbody'
-		await page.waitForSelector(titleSelector)
-		await page.waitForSelector(cityOrNSelector)
-		await page.waitForSelector(descriptionSelector)
-
+		var titleSelector = '#titletextonly'
+		var cityOrNSelector = 'body > section > section > h2 > span > small' 
+		var descriptionSelector = '#postingbody'
+		try{
+			await page.waitForSelector(titleSelector)
+		} catch(e) {
+			titleSelector = null
+		}
+		try{
+			await page.waitForSelector(cityOrNSelector)
+		} catch(e) {
+			cityOrNSelector = null
+		}
+		try{
+			await page.waitForSelector(descriptionSelector)
+		} catch(e) {
+			descriptionSelector = null
+		}
 
 		const result = await page.evaluate((titleSelector, cityOrNSelector, descriptionSelector) => {
-		  let title = document.querySelector(titleSelector).innerText
-		  let cityOrN = document.querySelector(cityOrNSelector).innerText
-		  let description = document.querySelector(descriptionSelector).innerText
+		  let title = ''
+		  if(titleSelector != null){
+		  	title = document.querySelector(titleSelector).innerText
+		  }
+
+		  let cityOrN = ''
+		  if(cityOrNSelector != null) {
+		  	cityOrN = document.querySelector(cityOrNSelector).innerText
+		  }
+
+		  let description = ''
+		  if(descriptionSelector != null) {
+		  	description = document.querySelector(descriptionSelector).innerText
+		  }
 		  return {
 		  	title, 
 		  	cityOrN,
 		  	description
 		  }
 		}, titleSelector, cityOrNSelector, descriptionSelector);
-		// console.log(result.title)
+		console.log(result)
 		// console.log(result.cityOrN)
 		// console.log(result.description)
 		 getPictures(page, url, res).then(function(pics) {
@@ -186,7 +214,12 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		// await page.tap(goSelector2)
 
 		// await page.waitFor(2000);
-		await page.waitForSelector(goSelector)
+		try{
+			await page.waitForSelector(goSelector)
+		} catch(e) {
+
+		}
+
 		await page.select('select[name="areaabb"]', 'dal');
 
 		await page.waitForSelector(goSelector2)
@@ -294,13 +327,12 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 			} catch(e) {
 				console.log("ERRROR no classic no modern")
 			}
-
 		}
 
 
 
 		await page.waitFor(1000);
-		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]").then(r => {await r[0].click()}, 
+		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]").then(async r => {await r[0].click()}, 
 			e => {console.log(e)});
 		// console.log(linkHandlers[0])
 		
