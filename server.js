@@ -14,6 +14,7 @@ app.get('/', function(req, res) {
 
 app.post('/', function(req, res) {
   const url = req.param('url')
+  console.log("NEW REQUEST: ", url)
   parsePage(url, res)
   //res.status(400).send('Error in retrieving user from database');
 });
