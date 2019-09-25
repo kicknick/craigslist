@@ -285,10 +285,12 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 		//POSTING IMAGE
 		console.log("posting images")
-		await page.waitForNavigation()
-		await page.waitFor(2000);
-		await page.waitForSelector('#classic')
-		await page.waitFor(1000);
+		await page.waitFor(3000);
+		let promise1 = await page.waitForSelector('#classic')
+		promise1.cath(e => {
+			console.log("ERRRRRRRRRRRR")
+		})
+		// await page.waitFor(1000);
 		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]");
 		// console.log(linkHandlers[0])
 		await linkHandlers[0].click();
