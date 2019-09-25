@@ -198,24 +198,33 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		await page.click(locationSelector)
 
 		let continueButton = 'body > article > section > form > button'
+		await page.waitFor(1000);
 		await page.waitForSelector(continueButton)
+		await page.waitFor(1000);
 		await page.click(continueButton)
+		await page.waitFor(2000);
 
 		const typeOfPosting = 'body > article > section > form > ul > li:nth-child(5) > label > span.right-side'
-		// await page.waitFor(1000);
+		await page.waitFor(1000);
 		await page.waitForSelector(typeOfPosting)
+		await page.waitFor(1000);
 		await page.click(typeOfPosting)
+		await page.waitFor(2000);
 		console.log("type of posting selected")
 
 		const continueButton2 = 'body > article > section > form > button'
-		await page.waitFor(3000);
-		await page.waitForSelector(continueButton2)
-		await page.waitFor(3000);
-		await page.click(continueButton2)
+		// await page.waitFor(3000);
+		// await page.waitForSelector(continueButton2).catch(async e => {
+		// 	console.log("redirect to =hcat")
+		// 	let postingUrl = page.url().split('=')[0]+'=hcat'
+		// 	await page.goto(postingUrl)
+		// })
+		// await page.waitFor(3000);
+		// await page.click(continueButton2)
 		// await clickOn(continueButton2, page)
 		//await page.$x("//*[contains(text(), 'continue')]")[0].click();
 		// await page.evaluate((selector) => document.querySelector(selector).click(), continueButton2);
-		console.log("type of posting clicked")
+		// console.log("type of posting clicked")
 
 
 
@@ -225,16 +234,22 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		await page.waitForSelector(realEstateSelector)
 		await page.waitFor(1000);
 		await page.click(realEstateSelector)
+		await page.waitFor(2000);
 		// await page.$x("//*[contains(text(), 'wanted: real estate')]")[0].click();
 		console.log("wanted: real estate selected")
 
 		const continueButton3 = '#new-edit > div > div.json-form-group.json-form-group-container.button > div > button'
-		await page.waitFor(3000);
-		await page.waitForSelector(continueButton3)
-		await page.waitFor(3000);
-		await page.click(continueButton3)
-		console.log("real estate clicked")
+		// await page.waitFor(3000);
+		// await page.waitForSelector(continueButton3).catch(async e => {
+		// 	console.log("redirect to =edit")
+		// 	let postingUrl = page.url().split('=')[0]+'=edit'
+		// 	await page.goto(postingUrl)
+		// })
+		// await page.waitFor(3000);
 		// await page.click(continueButton3)
+		// console.log("real estate clicked")
+		// await page.click(continueButton3)
+
 
 		// POSTING
 		// const postingTitle = "We purchase any house under $350,000"
@@ -246,24 +261,24 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 		// const cityOrN = 'Anywhere in Dallas or Fort Worth Area'
 		const cityOrNSelector = '#GeographicArea'
-		await page.waitFor(1000);
+		// await page.waitFor(1000);
 		await page.waitForSelector(cityOrNSelector)
-		await page.waitFor(1000);
+		// await page.waitFor(1000);
 		await page.type(cityOrNSelector, cityOrN)
 
 
 		//const description = "We buy houses throughout North Texas. We offer fair prices and work with every situation. We have helped people who: just want to sell, don't want to deal with realtor fees, have a house that needs a bunch of work, inherited a property, never got a will, never probated, just probated, etc, etc. If we can't help for some odd reason, we will point you in the right direction!"
 		const descriptionSelector = '#PostingBody'
-		await page.waitFor(1000);
+		// await page.waitFor(1000);
 		await page.waitForSelector(descriptionSelector)
-		await page.waitFor(1000);
+		// await page.waitFor(1000);
 		await page.type(descriptionSelector, description)
 
 
 		const continueButton4 = '#new-edit > div > div.json-form-group.json-form-group-container.submit-buttons > div > button'
-		await page.waitFor(1000);
+		// await page.waitFor(1000);
 		await page.waitForSelector(continueButton4)
-		await page.waitFor(1000);
+		// await page.waitFor(1000);
 		await page.click(continueButton4)
 
 
