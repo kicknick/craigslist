@@ -311,7 +311,11 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 		const continueButton4 = '#new-edit > div > div.json-form-group.json-form-group-container.submit-buttons > div > button'
 		// await page.waitFor(1000);
-		await page.waitForSelector(continueButton4)
+		try{
+			await page.waitForSelector(continueButton4)
+		} catch(e) {
+			console.error(e)
+		}
 		// await page.waitFor(1000);
 		await page.click(continueButton4)
 
@@ -344,26 +348,48 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 			await page.waitForSelector(fileInputSelector)
 			await page.waitFor(2000);
 			const input = await page.$(fileInputSelector);
-			await input.uploadFile(imgAdress);
+			try{
+				await input.uploadFile(imgAdress);
+			} catch(e) {
+				console.log("uploadImgError")
+				console.error(e)
+			}
+
 			console.log("posted "+imgAdress)
 		}
 
 
 		const doneImgSelector = 'body > article > section > form > button'
-		await page.waitForSelector(doneImgSelector)
+		await page.waitFor(1000);
+		try{
+			await page.waitForSelector(doneImgSelector)
+		} catch(e) {
+			console.error(e)
+		}
+
 		await page.click(doneImgSelector)
 
 
 		//PUBLISH
 		console.log("publishing...")
-		const publishSelector = '#publish_top > button'
-		await page.waitForSelector(publishSelector)
-		await page.click(publishSelector)
+		const publishSelector = '#publish_bottom > button'
+		try{
+			await page.waitForSelector(publishSelector).then(async r => {
+				await page.click(publishSelector)
+			})
+		} catch(e) {
+				console.error(e)
+		}
 
 
 
-		const resultUrlSelector = '#new-edit > div > div > ul > li:nth-child(1) > a'
+
+
+		const resultUrlSelector = '#new-edit > div > div > ul > li:nth-child(1) > a' //#publish_bottom > button
+		await page.waitFor(1000);
+
 		await page.waitForSelector(resultUrlSelector)
+
 		const resultUrl = await page.evaluate((resultUrlSelector) => {
 		  return document.querySelector(resultUrlSelector).innerText
 		}, resultUrlSelector);
