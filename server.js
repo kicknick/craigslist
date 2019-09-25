@@ -75,7 +75,7 @@ var wget = require('node-wget');
 let downloadPictures = (pics, i, result, callback) => {
   const url = pics[i]
   wget({url: url, dest: path.join(__dirname + '/pictures/')}, (error, response, body) => {
-    console.log(response.filepath)
+    // console.log(response.filepath)
     result.push(response.filepath)
     i++
     if(i < pics.length) 
@@ -286,14 +286,24 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		//POSTING IMAGE
 		console.log("posting images")
 		await page.waitFor(3000);
-		let promise1 = await page.waitForSelector('#classic')
-		promise1.cath(e => {
-			console.log("ERRRRRRRRRRRR")
-		})
-		// await page.waitFor(1000);
-		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]");
+		try{
+			await page.waitForSelector('#classic') 	
+		} catch(e) {
+			try{
+				await page.waitForSelector('#modern') 	
+			} catch(e) {
+				console.log("ERRROR no classic no modern")
+			}
+
+		}
+
+
+
+		await page.waitFor(1000);
+		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]").then(r => {await r[0].click()}, 
+			e => {console.log(e)});
 		// console.log(linkHandlers[0])
-		await linkHandlers[0].click();
+		
 
 		for(let i in pictures) {
 			const imgAdress = pictures[i]
