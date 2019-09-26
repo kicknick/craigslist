@@ -78,20 +78,50 @@ let getPictures = async(page, url, res) => {
 // 		}
 // 		return pictures
 // }
-var wget = require('node-wget');
-let downloadPictures = (pics, i, result, callback) => {
-  const url = pics[i]
-  wget({url: url, dest: path.join(__dirname + '/pictures/')}, (error, response, body) => {
-    // console.log(response.filepath)
-    result.push(response.filepath)
-    i++
-    if(i < pics.length) 
-      downloadPictures(pics, i, result, callback)
-    else {
-      // console.log("END")
-      callback(result)
-    }
-  });
+// var wget = require('node-wget');
+
+// let downloadPictures = (pics, i, result, callback) => {
+//   const url = pics[i]
+//   wget({url: url, dest: path.join(__dirname + '/pictures/')}, (error, response, body) => {
+//     // console.log(response.filepath)
+//     result.push(response.filepath)
+//     i++
+//     if(i < pics.length) 
+//       downloadPictures(pics, i, result, callback)
+//     else {
+//       // console.log("END")
+//       callback(result)
+//     }
+//   });
+// }
+
+
+const exec = require('child_process').exec;
+
+let downloadPictures = async (pics, i, result, callback)=> {
+	if(i < pics.length) {
+		try{
+			const filename = pics[i].split('/')[pics[i].split('/').length-1]
+			const dest = path.join(__dirname, '/pictures/', filename)
+			exec('wget -P ./testSh/ ' + pics[i], (error, stdout, stderr) => { //wget http://download.files.com/software/files.tar.gz -O /home/yourname/Downloads
+			    // console.log(stdout);
+			    // console.log(stderr);
+			    console.log("img downloaded ", dest)
+			    i++;
+			    result.push(dest)
+			    downloadPictures(pics, i, result, callback)
+			    if (error !== null) {
+			        console.log(`exec error: ${error}`);
+			    }
+			});
+		} catch(e){
+			console.log(e)
+		}
+	}
+	else {
+		console.log("images downloaded")
+		callback(result)
+	}
 }
 
 
@@ -344,6 +374,8 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 		for(let i in pictures) {
 			const imgAdress = pictures[i]
+			//const imgAdress = '/Users/admin/Documents/WEB/craigslist/qq/pictures/'+pictures[i].split('/')[pictures[i].split('/').length-1]
+			// console.log(imgAdress)
 			const fileInputSelector = '#uploader > form > input[type=file]:nth-child(3)'
 			await page.waitForSelector(fileInputSelector)
 			await page.waitFor(2000);
