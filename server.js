@@ -1,3 +1,5 @@
+//git fetch
+//git checkout origin/master -- ./server.js
 var puppeteer = require('/usr/local/lib/node_modules/puppeteer')
 //var puppeteer = require('puppeteer')
 var headless = false
@@ -99,16 +101,17 @@ let getPictures = async(page, url, res) => {
 const exec = require('child_process').exec;
 
 let downloadPictures = async (pics, i, result, callback)=> {
+	console.log(i, pics.length)
 	if(i < pics.length) {
 		try{
 			const filename = pics[i].split('/')[pics[i].split('/').length-1]
-			const dest = path.join(__dirname, '/pictures/', filename)
-			exec('wget -P ./testSh/ ' + pics[i], (error, stdout, stderr) => { //wget http://download.files.com/software/files.tar.gz -O /home/yourname/Downloads
+			const dest = path.join(__dirname, '/pictures/')
+			exec('wget -P '+ dest + ' '+ pics[i], (error, stdout, stderr) => { //wget http://download.files.com/software/files.tar.gz -O /home/yourname/Downloads
 			    // console.log(stdout);
 			    // console.log(stderr);
-			    console.log("img downloaded ", dest)
+			    console.log("img downloaded ", dest+filename)
 			    i++;
-			    result.push(dest)
+			    result.push(dest+filename)
 			    downloadPictures(pics, i, result, callback)
 			    if (error !== null) {
 			        console.log(`exec error: ${error}`);
@@ -119,8 +122,8 @@ let downloadPictures = async (pics, i, result, callback)=> {
 		}
 	}
 	else {
-		console.log("images downloaded")
-		callback(result)
+		console.log("downloaded all images")
+		callback(result)	
 	}
 }
 
