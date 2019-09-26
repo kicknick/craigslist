@@ -33,10 +33,19 @@ let getPictures = async(page, url, res) => {
 		await page.goto(url)
 		const imgDiv = '#thumbs'
 		try{
-			await page.waitForSelector(imgDiv, {"timeout": 3000}).then(r => {})
+			await page.waitForSelector(imgDiv, {"timeout": 10000}).then(r => {})
 		} catch(e) {
-			return []
-			console.log(e)
+			try {
+				await page.waitFor(3000);
+				// return await page.waitForSelector("#\31 _image_jYBjAhsGgZO > img", {"timeout": 10000})
+				return await page.evaluate(() => {
+					const r = document.querySelector('body > section > section > section > figure > div > div').querySelector('div').querySelector('div').querySelector('img').src
+					return [r]
+				})
+			} catch(e) {
+				return []
+				console.log(e)	
+			}
 		} 
 
 
