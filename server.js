@@ -348,6 +348,9 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		// await page.waitFor(1000);
 		await page.waitForSelector(descriptionSelector)
 		// await page.waitFor(1000);
+		if(description.indexOf('Call/Text show contact info') > 0) {
+			description = description.replace('Call/Text show contact info','');
+		}
 		await page.type(descriptionSelector, description)
 
 
@@ -447,7 +450,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		res.sendStatus(400).send('Error').end();
 	}
 
-	//browser.close();
+	browser.close();
 }
 
 
