@@ -16,7 +16,8 @@ app.get('/', function(req, res) {
 
 app.post('/', function(req, res) {
   const url = req.param('url')
-  console.log("NEW REQUEST: ", url)
+  const verifURL = req.param('verifURL')
+  console.log("NEW REQUEST: ", url, verifURL)
   parsePage(url, res)
   //res.status(400).send('Error in retrieving user from database');
 });
@@ -226,7 +227,8 @@ let clickOn = async(selector, page) => {
 
 
 let Login = async(postingTitle, cityOrN, description, pictures, res) => {
-	const url = 'https://accounts.craigslist.org'
+	const url = 'https://accounts.craigslist.org/login/onetime?key=62231093-i4CUY62NcYwWyULy6Tu2bJqNvSu1HR'
+	//const url = 'https://accounts.craigslist.org'
 	const email = 'toby@forwardven.com'
 	// const password = 'gfurfgryu4343'
 	const password = 'Alpha123@!make123'
@@ -237,19 +239,19 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		await page.goto(url)
 
 		//LOGIN
-		const emailSelector = '#inputEmailHandle'
-		const passSelector = '#inputPassword'
+		// const emailSelector = '#inputEmailHandle'
+		// const passSelector = '#inputPassword'
 
-		await page.waitForSelector(emailSelector)
-		await page.waitForSelector(passSelector)
+		// await page.waitForSelector(emailSelector)
+		// await page.waitForSelector(passSelector)
 
-		await page.type(emailSelector, email)
+		// await page.type(emailSelector, email)
 
-		await page.type(passSelector, password)
+		// await page.type(passSelector, password)
 
-		const loginSelector = '#login'
-		await page.click(loginSelector)
-		console.log("logged in")
+		// const loginSelector = '#login'
+		// await page.click(loginSelector)
+		// console.log("logged in")
 		//LOGIN END
 
 		const goSelector = 'body > article > section > form.new_posting_thing > select'

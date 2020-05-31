@@ -4,6 +4,7 @@
 </head>
 <body>
 	<input type="text" id="inputURL"/>
+	<input type="text" id="verifURL"/>
 	<button id="go">GO</button>
 	<br/>
 	<a href="" target="_blank" id="resultLink"></a>
@@ -11,10 +12,10 @@
 
 <script type="text/javascript">
 
-function sendURL(url, callback) {
+function sendURL(url, verifURL, callback) {
 	var xhr = new XMLHttpRequest();
 	console.log(url)
-	xhr.open('POST', '/?url='+url, false);
+	xhr.open('POST', '/?url='+url+'&verifURL='+verifURL, false);
 	xhr.send();
 
 	if (xhr.status != 200) {
@@ -36,7 +37,8 @@ function ready() {
 	console.log("ready")
 	document.getElementById('go').onclick=function(){
 		const url = document.getElementById('inputURL').value
-		sendURL(url, function() {})
+		const verifURL = document.getElementById('verifURL').value
+		sendURL(url,verifURL, function() {})
 	}
 
 }
