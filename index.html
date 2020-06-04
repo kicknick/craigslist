@@ -4,7 +4,7 @@
 </head>
 <body>
 	<input type="text" id="inputURL"/>
-	<input type="text" id="verifURL"/>
+	<input type="text" id="verifURL" placeholder="verification url"/>
 	<button id="go">GO</button>
 	<br/>
 	<a href="" target="_blank" id="resultLink"></a>
@@ -14,7 +14,7 @@
 
 function sendURL(url, verifURL, callback) {
 	var xhr = new XMLHttpRequest();
-	console.log(url)
+	console.log(url, verifURL)
 	xhr.open('POST', '/?url='+url+'&verifURL='+verifURL, false);
 	xhr.send();
 

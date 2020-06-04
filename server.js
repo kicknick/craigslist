@@ -18,7 +18,7 @@ app.post('/', function(req, res) {
   const url = req.param('url')
   const verifURL = req.param('verifURL')
   console.log("NEW REQUEST: ", url, verifURL)
-  parsePage(url, res)
+  parsePage(url, verifURL, res)
   //res.status(400).send('Error in retrieving user from database');
 });
 
@@ -140,9 +140,10 @@ let downloadPictures = async (pics, i, result, callback)=> {
 
 
 
-let parsePage = async(url, res) => {
+let parsePage = async(url, verifyURL, res) => {
 		try{
-		const browser = await puppeteer.launch({headless: headless});
+		// const browser = await puppeteer.launch({headless: headless});
+		const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
 		const page = await browser.newPage()
 		await page.goto(url)
 
@@ -193,7 +194,7 @@ let parsePage = async(url, res) => {
 		 	downloadPictures(pics, 0, [], function(pictures){
 			  console.log(pictures)
 			  browser.close();
-			  Login(result.title, result.cityOrN, result.description, pictures, res)
+			  Login(result.title, result.cityOrN, result.description, pictures, res, verifyURL)
 			})
 		 	// downloadPictures(pics, res).then(function(pictures) {
 		 	// 	console.log(pictures)
@@ -226,8 +227,8 @@ let clickOn = async(selector, page) => {
 
 
 
-let Login = async(postingTitle, cityOrN, description, pictures, res) => {
-	const url = 'https://accounts.craigslist.org/login/onetime?key=62231093-i4CUY62NcYwWyULy6Tu2bJqNvSu1HR'
+let Login = async(postingTitle, cityOrN, description, pictures, res, verifyURL) => {
+	//const url = 'https://accounts.craigslist.org/login/onetime?key=62231093-i4CUY62NcYwWyULy6Tu2bJqNvSu1HR'
 	//const url = 'https://accounts.craigslist.org'
 	const email = 'toby@forwardven.com'
 	// const password = 'gfurfgryu4343'
@@ -236,7 +237,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		const browser = await puppeteer.launch({headless: headless});
 		// const browser = await puppeteer.launch();
 	  const page = await browser.newPage()
-		await page.goto(url)
+		await page.goto(verifyURL)
 
 		//LOGIN
 		// const emailSelector = '#inputEmailHandle'
@@ -338,10 +339,8 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		await page.type(titleSelector, postingTitle)
 
 		// const cityOrN = 'Anywhere in Dallas or Fort Worth Area'
-		const cityOrNSelector = '#GeographicArea'
-		// await page.waitFor(1000);
+		const cityOrNSelector = '#geographic_area'
 		await page.waitForSelector(cityOrNSelector)
-		// await page.waitFor(1000);
 		await page.type(cityOrNSelector, cityOrN)
 
 
@@ -354,7 +353,6 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 			description = description.replace('Call/Text show contact info','');
 		}
 		await page.type(descriptionSelector, description)
-
 
 		const continueButton4 = '#new-edit > div > div.json-form-group.json-form-group-container.submit-buttons > div > button'
 		// await page.waitFor(1000);
@@ -433,7 +431,6 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 
 
 
-
 		const resultUrlSelector = '#new-edit > div > div > ul > li:nth-child(1) > a' //#publish_bottom > button
 		await page.waitFor(1000);
 
@@ -445,14 +442,13 @@ let Login = async(postingTitle, cityOrN, description, pictures, res) => {
 		console.log("DONE")
 		console.log(resultUrl)
 		res.status(200).send(resultUrl).end();
-
+		browser.close();
 
 	}	catch(e) {
 		console.error("Error: ", e)
 		res.sendStatus(400).send('Error').end();
 	}
 
-	browser.close();
 }
 
 
