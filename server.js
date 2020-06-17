@@ -368,7 +368,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res, verifyURL) 
 
 		//POSTING IMAGE
 		console.log("posting images")
-		await page.waitFor(3000);
+		await page.waitFor(5000);
 		try{
 			await page.waitForSelector('#classic') 	
 		} catch(e) {
@@ -381,7 +381,7 @@ let Login = async(postingTitle, cityOrN, description, pictures, res, verifyURL) 
 
 
 
-		await page.waitFor(1000);
+		await page.waitFor(5000);
 		const linkHandlers = await page.$x("//*[contains(text(), 'Use classic image uploader')]").then(async r => {await r[0].click()}, 
 			e => {console.log(e)});
 		// console.log(linkHandlers[0])
