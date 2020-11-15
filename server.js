@@ -230,9 +230,8 @@ let clickOn = async(selector, page) => {
 let Login = async(postingTitle, cityOrN, description, pictures, res, verifyURL) => {
 	//const url = 'https://accounts.craigslist.org/login/onetime?key=62231093-i4CUY62NcYwWyULy6Tu2bJqNvSu1HR'
 	//const url = 'https://accounts.craigslist.org'
-	const email = 'toby@forwardven.com'
-	// const password = 'gfurfgryu4343'
-	const password = 'Alpha123@!make123'
+	const email = ''
+	const password = ''
 	try{
 		const browser = await puppeteer.launch({headless: headless});
 		// const browser = await puppeteer.launch();
